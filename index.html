@@ -6,6 +6,12 @@
     <title>Sabor & Arte | Cardápio Digital</title>
     <link href="images.jpg" rel="stylesheet">
     <style>
+
+        #mesa-display{
+    font-size:18px;
+    font-weight:bold;
+    margin-top:5px;
+}
         :root {
             --primary: #ff4757;
             --dark: #2f3542;
@@ -176,6 +182,7 @@
     <header>
         <h1>Sabor & Arte</h1>
         <p>A melhor experiência gastronômica</p>
+        <p id="mesa-display"></p>
     </header>
 
     <div class="container">
@@ -407,6 +414,11 @@
                 }
             });
         }
+
+        window.onload = function() {
+        const mesa = getMesa();
+        document.getElementById("mesa-display").innerText = "Mesa " + mesa;
+     }
     </script>
 
 </body>
