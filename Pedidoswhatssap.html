@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sabor & Arte | Cardápio Digital</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #ff4757;
+            --dark: #2f3542;
+            --light: #ffffff;
+            --bg: #f1f2f6;
+            --shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--dark);
+            line-height: 1.6;
+            padding-bottom: 100px;
+        }
+
+        header {
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1000&q=80');
+            background-size: cover;
+            background-position: center;
+            height: 250px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            text-align: center;
+            border-bottom-left-radius: 50px;
+            border-bottom-right-radius: 50px;
+            box-shadow: var(--shadow);
+        }
+
+        header h1 { font-size: 2.5rem; letter-spacing: 2px; }
+
+        .container {
+            width: 95%; /* Aumentado levemente para melhor uso da tela */
+            max-width: 600px;
+            margin: -40px auto 50px;
+        }
+
+        /* AJUSTE NA NAVEGAÇÃO DE CATEGORIAS */
+        .categories {
+            display:flex;
+    justify-content:center;
+    flex-wrap:wrap;
+    gap:12px;
+    max-width:700px;
+    margin:auto;
+           
+        }
+        
+        .categories::-webkit-scrollbar { display: none; }
+
+        .cat-btn {
+            background: white;
+            padding: 10px 22px;
+            border-radius: 25px;
+            white-space: nowrap;
+            flex-shrink: 0; /* CRUCIAL: impede que o botão encolha */
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            font-weight: 600;
+            border: none;
+            transition: 0.3s;
+        }
+
+        .cat-btn.active { background: var(--primary); color: white; }
+
+        .menu-section { margin-top: 20px; padding: 0 10px; }
+        .menu-section h2 { margin-bottom: 20px; font-size: 1.2rem; color: var(--primary); 
+            text-transform: uppercase; }
+
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 8px;
+        }
+
+        .qty-btn {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: none;
+            background: var(--primary);
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .qty-btn:hover { background: #e84118; }
+
+        .qty-display {
+            font-weight: 600;
+            min-width: 25px;
+            text-align: center;
+        }
+
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: var(--shadow);
+            transition: 0.3s;
+        }
+
+        .card.selected {
+            border: 2px solid var(--primary);
+            background: #fff5f5;
+        }
+
+        .hidden { display: none; }
+
+        .card img {
+            width: 80px;
+            height: 80px;
+            border-radius: 15px;
+            object-fit: cover;
+        }
+
+        .card-info { flex: 1; }
+        .card-info h3 { font-size: 1rem; margin-bottom: 5px; }
+        .card-info p { font-size: 0.85rem; color: #747d8c; }
+        
+        .price-tag {
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 1.1rem;
+        }
+
+        .btn-order {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #25d366;
+            color: white;
+            padding: 15px 40px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 700;
+            box-shadow: 0 10px 20px rgba(37, 211, 102, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 85%;
+            justify-content: center;
+            z-index: 100;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Sabor & Arte</h1>
+        <p>A melhor experiência gastronômica</p>
+    </header>
+
+    <div class="container">
+        <div class="categories">
+            <button class="cat-btn active" onclick="filterMenu('todos', event)">🌟 Todos</button>
+            <button class="cat-btn" onclick="filterMenu('burger', event)">🍔 Hamburgueres</button>
+            <button class="cat-btn" onclick="filterMenu('pizza', event)">🍕 Pizzas</button>
+            <button class="cat-btn" onclick="filterMenu('bebida', event)">🥤 Bebidas</button>
+            <button class="cat-btn" onclick="filterMenu('sobremesa', event)">🍰 Sobremesas</button>
+        </div>
+        
+        <div class="menu-section" id="menu-container">
+            <h2 id="category-title">Nosso Cardápio</h2>
+
+            <div class="card burger" data-name="Classic Smash" data-price="28">
+                <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=200&q=80" alt="Burger">
+                <div class="card-info">
+                    <h3>Classic Smash</h3>
+                    <p>Pão brioche, carne 160g e cheddar.</p>
+                    <div class="quantity-controls">
+                        <button class="qty-btn" onclick="updateQty(this, -1)">-</button>
+                        <span class="qty-display">0</span>
+                        <button class="qty-btn" onclick="updateQty(this, 1)">+</button>
+                    </div>
+                </div>
+                <div class="price-tag">R$ 28</div>
+            </div>
+
+            <div class="card pizza" data-name="Pizza Marguerita" data-price="45">
+                <img src="https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=200&q=80" alt="Pizza">
+                <div class="card-info">
+                    <h3>Pizza Marguerita</h3>
+                    <p>Molho artesanal, mozzarella e manjericão.</p>
+                    <div class="quantity-controls">
+                        <button class="qty-btn" onclick="updateQty(this, -1)">-</button>
+                        <span class="qty-display">0</span>
+                        <button class="qty-btn" onclick="updateQty(this, 1)">+</button>
+                    </div>
+                </div>
+                <div class="price-tag">R$ 45</div>
+            </div>
+
+            <div class="card pizza" data-name="Pizza Pepperoni" data-price="52">
+                <img src="https://images.unsplash.com/photo-1574071318508-1cdbad80ad38?auto=format&fit=crop&w=200&q=80" alt="Pizza">
+                <div class="card-info">
+                    <h3>Pizza Pepperoni</h3>
+                    <p>Pepperoni defumado e muita mozzarella.</p>
+                    <div class="quantity-controls">
+                        <button class="qty-btn" onclick="updateQty(this, -1)">-</button>
+                        <span class="qty-display">0</span>
+                        <button class="qty-btn" onclick="updateQty(this, 1)">+</button>
+                    </div>
+                </div>
+                <div class="price-tag">R$ 52</div>
+            </div>
+
+            <div class="card bebida" data-name="Milkshake Premium" data-price="18">
+                <img src="https://images.unsplash.com/photo-1550507992-eb63ffee0847?auto=format&fit=crop&w=200&q=80" alt="Milkshake">
+                <div class="card-info">
+                    <h3>Milkshake Premium</h3>
+                    <p>Baunilha real e calda de chocolate.</p>
+                    <div class="quantity-controls">
+                        <button class="qty-btn" onclick="updateQty(this, -1)">-</button>
+                        <span class="qty-display">0</span>
+                        <button class="qty-btn" onclick="updateQty(this, 1)">+</button>
+                    </div>
+                </div>
+                <div class="price-tag">R$ 18</div>
+            </div>
+
+            <div class="card bebida" data-name="Coca-Cola Lata" data-price="7">
+                <img src="https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=200&q=80" alt="Coca">
+                <div class="card-info">
+                    <h3>Coca-Cola Lata</h3>
+                    <p>Gelada, 350ml.</p>
+                    <div class="quantity-controls">
+                        <button class="qty-btn" onclick="updateQty(this, -1)">-</button>
+                        <span class="qty-display">0</span>
+                        <button class="qty-btn" onclick="updateQty(this, 1)">+</button>
+                    </div>
+                </div>
+                <div class="price-tag">R$ 7</div>
+            </div>
+
+            <div class="card sobremesa" data-name="Brownie com Sorvete" data-price="22">
+                <img src="https://images.unsplash.com/photo-1563805042-7684c019e1cb?auto=format&fit=crop&w=200&q=80" alt="Sorvete">
+                <div class="card-info">
+                    <h3>Brownie com Sorvete</h3>
+                    <p>Chocolate meio amargo e sorvete de creme.</p>
+                    <div class="quantity-controls">
+                        <button class="qty-btn" onclick="updateQty(this, -1)">-</button>
+                        <span class="qty-display">0</span>
+                        <button class="qty-btn" onclick="updateQty(this, 1)">+</button>
+                    </div>
+                </div>
+                <div class="price-tag">R$ 22</div>
+            </div>
+        </div>
+    </div>
+
+    <a href="#" class="btn-order" id="btn-whatsapp" onclick="enviarPedido(event)">
+        <span>Pedir pelo WhatsApp</span>
+        <span id="total-display">R$ 0</span>
+    </a>
+
+    <script>
+        // Armazena as quantidades de cada item
+        const quantities = {};
+
+        function updateQty(btn, change) {
+            // Encontrar o card pai do botão
+            const card = btn.closest('.card');
+            const name = card.dataset.name;
+            const price = parseInt(card.dataset.price);
+            
+            // Inicializar quantidade se não existir
+            if (!quantities[name]) {
+                quantities[name] = 0;
+            }
+            
+            // Atualizar quantidade
+            quantities[name] += change;
+            
+            // Não permitir quantidade negativa
+            if (quantities[name] < 0) {
+                quantities[name] = 0;
+            }
+            
+            // Atualizar display da quantidade
+            const qtyDisplay = card.querySelector('.qty-display');
+            qtyDisplay.textContent = quantities[name];
+            
+            // Atualizar visual do card
+            if (quantities[name] > 0) {
+                card.classList.add('selected');
+            } else {
+                card.classList.remove('selected');
+            }
+            
+            // Recalcular total
+            updateTotal();
+        }
+
+        function updateTotal() {
+            let total = 0;
+            const cards = document.querySelectorAll('.card');
+            
+            cards.forEach(card => {
+                const name = card.dataset.name;
+                const price = parseInt(card.dataset.price);
+                const qty = quantities[name] || 0;
+                total += price * qty;
+            });
+            
+            // Atualizar display do total
+            const totalDisplay = document.getElementById('total-display');
+            totalDisplay.textContent = 'R$ ' + total.toFixed(2).replace('.', ',');
+        }
+    
+        // Pegar número da mesa xxxxxxxxxxx
+    function getMesa() {
+    const params = new URLSearchParams(window.location.search);
+    return params.get("mesa") || "Não informada";
+}
+
+        function enviarPedido(event) {
+            event.preventDefault();
+            
+            // Coletar itens selecionados
+            let items = [];
+            let total = 0;
+            
+            const cards = document.querySelectorAll('.card');
+            cards.forEach(card => {
+                const name = card.dataset.name;
+                const price = parseInt(card.dataset.price);
+                const qty = quantities[name] || 0;
+                
+                if (qty > 0) {
+                    items.push(`${qty}x ${name} - R$ ${(price * qty).toFixed(2).replace('.', ',')}`);
+                    total += price * qty;
+                }
+            });
+            
+            if (items.length === 0) {
+                alert('Por favor, selecione pelo menos um item!');
+                return;
+            }
+            
+            // Criar Mensagem para WhatsApp
+           const mesa = getMesa();
+
+           const mensagem = `*Novo Pedido - Sabor & Arte*
+
+           🍽️ Mesa: ${mesa}
+
+           ${items.join('\n')}
+
+          *Total: R$ ${total.toFixed(2).replace('.', ',')}*`;
+
+            // Codificar mensagem para URL
+            const mensagemEncoded = encodeURIComponent(mensagem);
+            
+            // Número do WhatsApp (substitua pelo número real)
+            const telefoneWhatsApp = '5588994517198';
+            
+            // Redirecionar para WhatsApp
+            window.open(`https://wa.me/${telefoneWhatsApp}?text=${mensagemEncoded}`, '_blank');
+        }
+
+        function filterMenu(category, event) {
+            // 1. Atualizar visual dos botões
+            const buttons = document.querySelectorAll('.cat-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+
+            // 2. Filtrar itens
+            const cards = document.querySelectorAll('.card');
+            
+            cards.forEach(card => {
+                if (category === 'todos') {
+                    card.classList.remove('hidden');
+                } else {
+                    if (card.classList.contains(category)) {
+                        card.classList.remove('hidden');
+                    } else {
+                        card.classList.add('hidden');
+                    }
+                }
+            });
+        }
+    </script>
+
+</body>
+</html>
