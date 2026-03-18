@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pizza Express | Cardápio Digital</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #e63946;
+            --primary-dark: #c92a3a;
+            --dark: #2c3e50;
+            --light: #ffffff;
+            --bg: #f8f9fa;
+            --shadow: 0 10px 30px rgba(0,0,0,0.1);
+            --pizza-red: #e63946;
+            --pizza-green: #27ae60;
+            --pizza-yellow: #f1c40f;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--dark);
+            line-height: 1.6;
+            padding-bottom: 100px;
+        }
+
+        header {
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1604382354936-07c5d9983bd3?auto=format&fit=crop&w=1000&q=80');
+            background-size: cover;
+            background-position: center;
+            height: 250px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            text-align: center;
+            border-bottom-left-radius: 50px;
+            border-bottom-right-radius: 50px;
+            box-shadow: var(--shadow);
+        }
+
+        header h1 { 
+            font-size: 2.5rem; 
+            letter-spacing: 2px; 
+        }
+
+        .container {
+            width: 95%;
+            max-width: 600px;
+            margin: -40px auto 50px;
+        }
+
+        .categories {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            max-width: 700px;
+            margin: auto;
+        }
+        
+        .cat-btn {
+            background: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            white-space: nowrap;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            font-weight: 600;
+            border: none;
+            transition: 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .cat-btn.active { 
+            background: var(--primary); 
+            color: white; 
+        }
+
+        .cat-btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .menu-section { 
+            margin-top: 30px; 
+            padding: 0 10px; 
+        }
+
+        .menu-section h2 { 
+            margin-bottom: 20px; 
+            font-size: 1.3rem; 
+            color: var(--primary); 
+            text-transform: uppercase; 
+            border-left: 5px solid var(--primary);
+            padding-left: 15px;
+        }
+
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 8px;
+        }
+
+        .qty-btn {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: none;
+            background: var(--primary);
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .qty-btn:hover { background: var(--primary-dark); }
+
+        .qty-display {
+            font-weight: 600;
+            min-width: 25px;
+            text-align: center;
+        }
+
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: var(--shadow);
+            transition: 0.3s;
+        }
+
+        .card.selected {
+            border: 2px solid var(--primary);
+            background: #ffe6e8;
+        }
+
+        .hidden { display: none; }
+
+        .card img {
+            width: 90px;
+            height: 90px;
+            border-radius: 15px;
+            object-fit: cover;
+            border: 2px solid #fff;
+            box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+        }
+
+        .card-info { flex: 1; }
+        
+        .card-info h3 { 
+            font-size: 1rem; 
+            margin-bottom: 5px;
+            color: var(--dark);
+        }
+        
+        .card-info p { 
+            font-size: 0.8rem; 
+            color: #7f8c8d;
+            margin-bottom: 5px;
+        }
+        
+        .price-tag {
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 1.2rem;
+        }
+
+        .btn-order {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #25d366;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 700;
+            box-shadow: 0 10px 20px rgba(37, 211, 102, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            width: 85%;
+            max-width: 400px;
+            justify-content: center;
+            z-index: 100;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .btn-order span:last-child {
+            background: white;
+            color: #25d366;
+            padding: 5px 15px;
+            border-radius: 25px;
+            font-size: 0.9rem;
+        }
+
+        .tag {
+            background: var(--primary);
+            color: white;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            display: inline-block;
+            margin-right: 5px;
+        }
+
+        #mesa-display {
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+
+        .obs-field {
+            margin: 15px 0;
+            padding: 12px;
+            background: #fff9e6;
+            border-radius: 12px;
+            border-left: 4px solid var(--pizza-yellow);
+        }
+        
+        .obs-field label {
+            font-weight: 600;
+            display: block;
+            margin-bottom: 5px;
+            color: var(--dark);
+        }
+        
+        .obs-field input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🍕 Pizza Express</h1>
+        <p>A melhor pizza da cidade</p>
+        <p id="mesa-display"></p>
+    </header>
+
+    <div class="container">
+        <div class="categories">
+            <button class="cat-btn active" onclick="filterMenu('todos', event)">🌟 Todos</button>
+            <button class="cat-btn" onclick="filterMenu('salgada', event)">🍕 Salgadas</button>
+            <button class="cat-btn" onclick="filterMenu('doce', event)">🍫 Doces</button>
+            <button class="cat-btn" onclick="filterMenu('bebida', event)">🥤 Bebidas</button>
+            <button class="cat-btn" onclick="filterMenu('combo', event)">🔥 Combos</button>
+        </div>
+        
+        <div class="menu-section" id="menu-container">
+            <h2 id="category-title">Nosso Cardápio</h2>
+
+            <!-- PIZZAS SALGADAS -->
+            <div class="card salgada" data-name="Pizza Margherita (Média)" data-price="42.90">
+                <img src="https://images.unsplash.com/photo-1604382354936-07c5d9983bd3?auto=format&fit=crop&w=200&q=80" alt="Pizza Margherita">
+                <div class="card-info">
+                    <h3>Pizza Margherita (Média)</h3>
+                    <p><span class="tag">Mais pedida</span> Molho, mussarela, tomate, manjericão</p>
+                    <div class="quantity-controls">
+                        <button class="qty-btn" onclick="updateQty(this, -1)">-</button>
+                        <span class="qty-display">0</span>
+                        <button class="qty-btn" onclick="updateQty(this, 1)">+</button>
+                    </div>
+                </div>
+                <div class="price-tag">R$ 42,90</div>
+            </div>
+
+            <div class="card salgada" data-name="Pizza Calabresa (Média)" data-price="45.90">
+                <img src="https://images.unsplash.com/photo-1574126154517-d1e0d89ef734?auto=format&fit=crop&w=200&q=80" alt="Pizza Calabresa">
+                <div class="card-info">
+                    <h3>Pizza Calabresa (Média)</h3>
+                    <p>Calabresa fatiada, cebola e azeitona</p>
+                    <div class="quantity-controls">
+                        <button class="qty-btn" onclick="updateQty(this, -1)">-</button>
+                        <span class="qty-display">0</span>
+                        <button class="qty-btn" onclick="updateQty(this, 1)">+</button>
+                    </div>
+                </div>
+                <div class="price-tag">R$ 45,90</div>
+            </div>
+
+            <div class="card salgada" data-name="Pizza Frango c/ Catupiry (Média)" data-price="49.90">
+                <img src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?auto=format&fit=crop&w=200&q=80" alt="Pizza Frango">
+                <div class="card-info">
+                    <h3>Pizza Frango c/ Catupiry (Média)</h3>
+                    <p>Frango desfiado, catupiry original, milho</p>
+                    <div class="quantity-controls">
+                        <button class="qty-btn" onclick="updateQty(this, -1)">-</button>
+                        <span class="qty-display">0</span>
+                        <button class="qty-btn" onclick="updateQty(this, 1)">+</button>
+                    </div>
+                </div>
+                <div class="price-tag">R$ 49,90</div>
+            </div>
+
+            <div class="card salgada" data-name="Pizza Portuguesa (Média)" data-price="52.90">
+                <img src="https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=200&q=80" alt="Pizza Portuguesa">
+                <div class="card-info">
+                    <h3>Pizza Portuguesa (Média)</h3>
+                    <p>Presunto, ovos, cebola, azeitona, mussarela</p>
+                    <div class="quantity-controls">
+                        <button class="qty-btn" onclick="updateQty(this, -1)">-</button>
+                        <span class="qty-display">0</span>
+                        <button class="qty-btn" onclick="updateQty(this, 1)">+</button>
+                    </div>
+                </div>
+                <div class="price-tag">R$ 52,90</div>
+            </div>
+
+            <!-- PIZZAS DOCES -->
+            <div class="card doce" data-name="Pizza Chocolate c/ Morango (Média)" data-price="54.90">
+                <img src="https://images.unsplash.com/photo-1565958011703-44f9829ba187?auto=format&fit=crop&w=200&q=80" alt="Pizza Doce">
+                <div class="card-info">
+                    <h3>Pizza Chocolate c/ Morango (Média)</h3>
+                    <p>Chocolate ao leite e morangos frescos</p>
+                    <div class="quantity-controls">
+                        <button class="qty-btn" onclick="updateQty(this, -1)">-</button>
+                        <span class="qty-display">0</span>
+                        <button class="qty-btn" onclick="updateQty(this, 1)">+</button>
+                    </div>
+                </div>
+                <div class="price-tag">R$ 54,90</div>
+            </div>
+
+            <div class="card doce" data-name="Pizza Banana c/ Canela (Média)" data-price="47.90">
+                <img src="https://images.unsplash.com/photo-1565958011703-44f9829ba187?auto=format&fit=crop&w=200&q=80" alt="Pizza Banana">
+                <div class="card-info">
+                    <h3>Pizza Banana c/ Canela (Média)</h3>
+                    <p>Banana caramelizada, canela e açúcar</p>
+                    <div class="quantity-controls">
+                        <button class="qty-btn" onclick="updateQty(this, -1)">-</button>
+                        <span class="qty-display">0</span>
+                        <button class="qty-btn" onclick="updateQty(this, 1)">+</button>
+                    </div>
+                </div>
+                <div class="price-tag">R$ 47,90</div>
+            </div>
+
+            <!-- BEBIDAS -->
+            <div class="card bebida" data-name="Refrigerante 2L" data-price="12.90">
+                <img src="https://images.unsplash.com/photo-1625772299848-391b6a87d7b3?auto=format&fit=crop&w=200&q=80" alt="Refrigerante">
+                <div class="card-info">
+                    <h3>Refrigerante 2L</h3>
+                    <p>Coca-Cola, Guaraná, Fanta</p>
+                    <div class="quantity-controls">
+                        <button class="qty-btn" onclick="updateQty(this, -1)">-</button>
+                        <span class="qty-display">0</span>
+                        <button class="qty-btn" onclick="updateQty(this, 1)">+</button>
+                    </div>
+                </div>
+                <div class="price-tag">R$ 12,90</div>
+            </div>
+
+            <div class="card bebida" data-name="Suco Natural 500ml" data-price="9.90">
+                <img src="https://images.unsplash.com/photo-1613478227155-37ae9d9a9f2e?auto=format&fit=crop&w=200&q=80" alt="Suco">
+                <div class="card-info">
+                    <h3>Suco Natural 500ml</h3>
+                    <p>Laranja, Morango, Abacaxi c/ hortelã</p>
+                    <div class="quantity-controls">
+                        <button class="qty-btn" onclick="updateQty(this, -1)">-</button>
+                        <span class="qty-display">0</span>
+                        <button class="qty-btn" onclick="updateQty(this, 1)">+</button>
+                    </div>
+                </div>
+                <div class="price-tag">R$ 9,90</div>
+            </div>
+
+            <div class="card bebida" data-name="Cerveja Long Neck" data-price="8.90">
+                <img src="https://images.unsplash.com/photo-1569529465841-dfecdab7503b?auto=format&fit=crop&w=200&q=80" alt="Cerveja">
+                <div class="card-info">
+                    <h3>Cerveja Long Neck</h3>
+                    <p>Heineken, Stella, Corona</p>
+                    <div class="quantity-controls">
+                        <button class="qty-btn" onclick="updateQty(this, -1)">-</button>
+                        <span class="qty-display">0</span>
+                        <button class="qty-btn" onclick="updateQty(this, 1)">+</button>
+                    </div>
+                </div>
+                <div class="price-tag">R$ 8,90</div>
+            </div>
+
+            <!-- COMBOS -->
+            <div class="card combo" data-name="Combo Família" data-price="89.90">
+                <img src="https://images.unsplash.com/photo-1604382354936-07c5d9983bd3?auto=format&fit=crop&w=200&q=80" alt="Combo Família">
+                <div class="card-info">
+                    <h3>Combo Família</h3>
+                    <p>1 Pizza Grande + 1 Refri 2L + 1 Sobremesa</p>
+                    <div class="quantity-controls">
+                        <button class="qty-btn" onclick="updateQty(this, -1)">-</button>
+                        <span class="qty-display">0</span>
+                        <button class="qty-btn" onclick="updateQty(this, 1)">+</button>
+                    </div>
+                </div>
+                <div class="price-tag">R$ 89,90</div>
+            </div>
+
+            <div class="card combo" data-name="Combo Casal" data-price="69.90">
+                <img src="https://images.unsplash.com/photo-1604382354936-07c5d9983bd3?auto=format&fit=crop&w=200&q=80" alt="Combo Casal">
+                <div class="card-info">
+                    <h3>Combo Casal</h3>
+                    <p>1 Pizza Média + 2 Bebidas + 1 Sobremesa</p>
+                    <div class="quantity-controls">
+                        <button class="qty-btn" onclick="updateQty(this, -1)">-</button>
+                        <span class="qty-display">0</span>
+                        <button class="qty-btn" onclick="updateQty(this, 1)">+</button>
+                    </div>
+                </div>
+                <div class="price-tag">R$ 69,90</div>
+            </div>
+        </div>
+        
+        <!-- Observação -->
+        <div class="obs-field">
+            <label>📝 Observação do pedido:</label>
+            <input type="text" id="obs-pedido" placeholder="Ex: tirar cebola, borda recheada, etc.">
+        </div>
+    </div>
+
+    <button class="btn-order" onclick="enviarPedido(event)">
+        <span>📱 Pedir pelo WhatsApp</span>
+        <span id="total-display">R$ 0,00</span>
+    </button>
+
+    <script>
+        const quantities = {};
+
+        function updateQty(btn, change) {
+            const card = btn.closest('.card');
+            const name = card.dataset.name;
+            const price = parseFloat(card.dataset.price);
+            
+            if (!quantities[name]) {
+                quantities[name] = 0;
+            }
+            
+            quantities[name] += change;
+            
+            if (quantities[name] < 0) {
+                quantities[name] = 0;
+            }
+            
+            const qtyDisplay = card.querySelector('.qty-display');
+            qtyDisplay.textContent = quantities[name];
+            
+            if (quantities[name] > 0) {
+                card.classList.add('selected');
+            } else {
+                card.classList.remove('selected');
+            }
+            
+            updateTotal();
+        }
+
+        function updateTotal() {
+            let total = 0;
+            const cards = document.querySelectorAll('.card');
+            
+            cards.forEach(card => {
+                const name = card.dataset.name;
+                const price = parseFloat(card.dataset.price);
+                const qty = quantities[name] || 0;
+                total += price * qty;
+            });
+            
+            const totalDisplay = document.getElementById('total-display');
+            totalDisplay.textContent = 'R$ ' + total.toFixed(2).replace('.', ',');
+        }
+    
+        function getMesa() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get("mesa") || "Não informada";
+        }
+
+        function enviarPedido(event) {
+            event.preventDefault();
+            
+            let items = [];
+            let total = 0;
+            
+            const cards = document.querySelectorAll('.card');
+            cards.forEach(card => {
+                const name = card.dataset.name;
+                const price = parseFloat(card.dataset.price);
+                const qty = quantities[name] || 0;
+                
+                if (qty > 0) {
+                    items.push(`${qty}x ${name} - R$ ${(price * qty).toFixed(2).replace('.', ',')}`);
+                    total += price * qty;
+                }
+            });
+            
+            if (items.length === 0) {
+                alert('Por favor, selecione pelo menos um item!');
+                return;
+            }
+            
+            const mesa = getMesa();
+            const observacao = document.getElementById('obs-pedido').value;
+
+            const mensagem = `*🍕 Pedido - Pizza Express*
+
+            🍽️ Mesa: ${mesa}
+            📋 *Itens:*
+            ${items.join('\n')}
+            
+            📝 *Observação:* ${observacao || 'Sem observação'}
+
+            💰 *Total: R$ ${total.toFixed(2).replace('.', ',')}*
+
+            ⏱️ Tempo de entrega: 30-40 min`;
+
+            const mensagemEncoded = encodeURIComponent(mensagem);
+            const telefoneWhatsApp = '5588997429853';
+            
+            window.open(`https://wa.me/${telefoneWhatsApp}?text=${mensagemEncoded}`, '_blank');
+        }
+
+        function filterMenu(category, event) {
+            const buttons = document.querySelectorAll('.cat-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+
+            const cards = document.querySelectorAll('.card');
+            
+            cards.forEach(card => {
+                if (category === 'todos') {
+                    card.classList.remove('hidden');
+                } else {
+                    if (card.classList.contains(category)) {
+                        card.classList.remove('hidden');
+                    } else {
+                        card.classList.add('hidden');
+                    }
+                }
+            });
+        }
+
+        window.onload = function() {
+            const mesa = getMesa();
+            document.getElementById("mesa-display").innerText = "Mesa " + mesa;
+            
+            // Inicializa displays de quantidade
+            document.querySelectorAll('.qty-display').forEach(el => el.textContent = '0');
+            updateTotal();
+        }
+    </script>
+</body>
+</html>

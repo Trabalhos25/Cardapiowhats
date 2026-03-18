@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sushi Zen | Cardápio Digital</title>
+    <style>
+        :root {
+            --primary: #d63031; /* Vermelho Oriental */
+            --dark: #1e272e;    /* Preto Carvão */
+            --light: #ffffff;
+            --bg: #f5f6fa;
+            --shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--dark);
+            line-height: 1.6;
+            padding-bottom: 120px;
+        }
+
+        header {
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1579871494447-9811cf80d66c?auto=format&fit=crop&w=1000&q=80');
+            background-size: cover;
+            background-position: center;
+            height: 220px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            text-align: center;
+            border-bottom-left-radius: 40px;
+            border-bottom-right-radius: 40px;
+            box-shadow: var(--shadow);
+        }
+
+        header h1 { font-size: 2.2rem; text-transform: uppercase; letter-spacing: 3px; }
+        #mesa-display { font-size: 1.1rem; background: var(--primary); padding: 2px 15px; border-radius: 20px; margin-top: 10px; }
+
+        .container {
+            width: 95%;
+            max-width: 600px;
+            margin: -30px auto 0;
+        }
+
+        .categories {
+            display: flex;
+            overflow-x: auto;
+            gap: 10px;
+            padding: 10px 5px;
+            scrollbar-width: none;
+        }
+        
+        .categories::-webkit-scrollbar { display: none; }
+
+        .cat-btn {
+            background: white;
+            padding: 10px 20px;
+            border-radius: 15px;
+            white-space: nowrap;
+            flex-shrink: 0;
+            box-shadow: var(--shadow);
+            cursor: pointer;
+            font-weight: 600;
+            border: 2px solid transparent;
+            transition: 0.3s;
+        }
+
+        .cat-btn.active { border-color: var(--primary); color: var(--primary); }
+
+        .menu-section { margin-top: 25px; }
+        .menu-section h2 { margin-left: 10px; margin-bottom: 15px; font-size: 1.1rem; color: #57606f; }
+
+        .card {
+            background: white;
+            border-radius: 18px;
+            padding: 12px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: var(--shadow);
+            transition: 0.3s;
+            position: relative;
+        }
+
+        .card.selected { border: 2px solid var(--primary); }
+        .hidden { display: none; }
+
+        .card img {
+            width: 90px;
+            height: 90px;
+            border-radius: 12px;
+            object-fit: cover;
+        }
+
+        .card-info { flex: 1; }
+        .card-info h3 { font-size: 1rem; color: var(--dark); }
+        .card-info p { font-size: 0.8rem; color: #747d8c; margin: 4px 0; }
+        
+        .price-tag { font-weight: 800; color: var(--primary); font-size: 1rem; }
+
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 8px;
+        }
+
+        .qty-btn {
+            width: 26px;
+            height: 26px;
+            border-radius: 8px;
+            border: none;
+            background: var(--dark);
+            color: white;
+            cursor: pointer;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .qty-display { font-weight: bold; width: 20px; text-align: center; }
+
+        .btn-order {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #27ae60;
+            color: white;
+            padding: 18px 30px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-weight: 700;
+            box-shadow: 0 10px 25px rgba(39, 174, 96, 0.4);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 90%;
+            max-width: 500px;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Sushi Zen</h1>
+        <p>Arte em cada detalhe</p>
+        <div id="mesa-display">Carregando mesa...</div>
+    </header>
+
+    <div class="container">
+        <div class="categories">
+            <button class="cat-btn active" onclick="filterMenu('todos', event)">🏮 Todos</button>
+            <button class="cat-btn" onclick="filterMenu('combinado', event)">🍱 Combinados</button>
+            <button class="cat-btn" onclick="filterMenu('temaki', event)">🍙 Temakis</button>
+            <button class="cat-btn" onclick="filterMenu('uramaki', event)">🍣 Rolls</button>
+            <button class="cat-btn" onclick="filterMenu('bebida', event)">🍶 Bebidas</button>
+        </div>
+        
+        <div class="menu-section" id="menu-container">
+            <h2 id="category-title">Sugestões do Chef</h2>
+
+            <div class="card combinado" data-name="Combinado 20 Peças" data-price="85">
+                <img src="https://images.unsplash.com/photo-1553621042-f6e147245754?auto=format&fit=crop&w=200&q=80" alt="Sushi">
+                <div class="card-info">
+                    <h3>Combinado Variado (20 un)</h3>
+                    <p>5 Sashimi, 5 Niguiri, 5 Uramaki e 5 Hossomaki.</p>
+                    <div class="quantity-controls">
+                        <button class="qty-btn" onclick="updateQty(this, -1)">-</button>
+                        <span class="qty-display">0</span>
+                        <button class="qty-btn" onclick="updateQty(this, 1)">+</button>
+                    </div>
+                </div>
+                <div class="price-tag">R$ 85</div>
+            </div>
+
+            <div class="card temaki" data-name="Temaki Filadélfia" data-price="38">
+                <img src="https://images.unsplash.com/photo-1617196034183-421b4917c92d?auto=format&fit=crop&w=200&q=80" alt="Temaki">
+                <div class="card-info">
+                    <h3>Temaki Filadélfia</h3>
+                    <p>Salmão fresco, cream cheese e cebolinha.</p>
+                    <div class="quantity-controls">
+                        <button class="qty-btn" onclick="updateQty(this, -1)">-</button>
+                        <span class="qty-display">0</span>
+                        <button class="qty-btn" onclick="updateQty(this, 1)">+</button>
+                    </div>
+                </div>
+                <div class="price-tag">R$ 38</div>
+            </div>
+
+            <div class="card uramaki" data-name="Uramaki Ebi" data-price="42">
+                <img src="https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?auto=format&fit=crop&w=200&q=80" alt="Uramaki">
+                <div class="card-info">
+                    <h3>Uramaki Ebi Furai</h3>
+                    <p>Camarão empanado, abacate e gergelim.</p>
+                    <div class="quantity-controls">
+                        <button class="qty-btn" onclick="updateQty(this, -1)">-</button>
+                        <span class="qty-display">0</span>
+                        <button class="qty-btn" onclick="updateQty(this, 1)">+</button>
+                    </div>
+                </div>
+                <div class="price-tag">R$ 42</div>
+            </div>
+
+            <div class="card bebida" data-name="Sake Dose" data-price="25">
+                <img src="https://images.unsplash.com/photo-1582650807026-c2254924a08d?auto=format&fit=crop&w=200&q=80" alt="Sake">
+                <div class="card-info">
+                    <h3>Sake Junmai (Dose)</h3>
+                    <p>Sake premium seco e refrescante.</p>
+                    <div class="quantity-controls">
+                        <button class="qty-btn" onclick="updateQty(this, -1)">-</button>
+                        <span class="qty-display">0</span>
+                        <button class="qty-btn" onclick="updateQty(this, 1)">+</button>
+                    </div>
+                </div>
+                <div class="price-tag">R$ 25</div>
+            </div>
+        </div>
+    </div>
+
+    <a href="#" class="btn-order" onclick="enviarPedido(event)">
+        <span>Finalizar Pedido</span>
+        <span id="total-display">R$ 0,00</span>
+    </a>
+
+    <script>
+        const quantities = {};
+
+        function updateQty(btn, change) {
+            const card = btn.closest('.card');
+            const name = card.dataset.name;
+            
+            if (!quantities[name]) quantities[name] = 0;
+            quantities[name] += change;
+            if (quantities[name] < 0) quantities[name] = 0;
+            
+            card.querySelector('.qty-display').textContent = quantities[name];
+            
+            if (quantities[name] > 0) {
+                card.classList.add('selected');
+            } else {
+                card.classList.remove('selected');
+            }
+            updateTotal();
+        }
+
+        function updateTotal() {
+            let total = 0;
+            document.querySelectorAll('.card').forEach(card => {
+                const qty = quantities[card.dataset.name] || 0;
+                total += qty * parseInt(card.dataset.price);
+            });
+            document.getElementById('total-display').textContent = 'R$ ' + total.toFixed(2).replace('.', ',');
+        }
+
+        function getMesa() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get("mesa") || "Balcão";
+        }
+
+        function filterMenu(category, event) {
+            document.querySelectorAll('.cat-btn').forEach(btn => btn.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+
+            document.querySelectorAll('.card').forEach(card => {
+                if (category === 'todos' || card.classList.contains(category)) {
+                    card.classList.remove('hidden');
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+        }
+
+        function enviarPedido(event) {
+            event.preventDefault();
+            let items = [];
+            let total = 0;
+            
+            document.querySelectorAll('.card').forEach(card => {
+                const qty = quantities[card.dataset.name] || 0;
+                if (qty > 0) {
+                    const price = parseInt(card.dataset.price);
+                    items.push(`${qty}x ${card.dataset.name} (R$ ${price * qty})`);
+                    total += price * qty;
+                }
+            });
+
+            if (items.length === 0) return alert('Seu carrinho está vazio!');
+
+            const mesa = getMesa();
+            const msg = `*PEDIDO SUSHI ZEN*\n📍 *Mesa:* ${mesa}\n\n${items.join('\n')}\n\n*Total: R$ ${total.toFixed(2)}*`;
+            window.open(`https://wa.me/5588997429853?text=${encodeURIComponent(msg)}`, '_blank');
+        }
+
+        window.onload = () => {
+            document.getElementById("mesa-display").innerText = "Mesa: " + getMesa();
+        }
+    </script>
+</body>
+</html>

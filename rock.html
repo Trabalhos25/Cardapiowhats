@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rock & Roll Food | Cardápio Radical</title>
+    <link href="https://fonts.googleapis.com/css2?family=Rock+Salt&family=Poppins:wght@400;600;700&family=Special+Elite&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #ff0000;
+            --primary-dark: #cc0000;
+            --secondary: #000000;
+            --accent: #ffd700;
+            --dark-bg: #1a1a1a;
+            --dark-surface: #2a2a2a;
+            --text-primary: #ffffff;
+            --text-secondary: #cccccc;
+            --border-color: #ff000033;
+            --shadow: 0 10px 30px rgba(255, 0, 0, 0.2);
+            --success: #00cc00;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--dark-bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+            padding-bottom: 100px;
+            font-family: 'Poppins', sans-serif;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" opacity="0.05"><path d="M20 20 L80 80 M80 20 L20 80" stroke="%23ff0000" stroke-width="2"/><circle cx="50" cy="50" r="10" fill="none" stroke="%23ff0000" stroke-width="2"/></svg>');
+            background-size: 50px 50px;
+        }
+
+        /* Efeito de distorção de guitarra */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent 65%, rgba(255,0,0,0.03) 100%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        header {
+            background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.9)), url('https://images.unsplash.com/photo-1498038432885-c6f3f1b912ee?auto=format&fit=crop&w=1000&q=80');
+            background-size: cover;
+            background-position: center;
+            height: 300px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: var(--text-primary);
+            text-align: center;
+            border-bottom: 4px solid var(--primary);
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Guitarra animada no header */
+        header::after {
+            content: '♫ ♪ ♫';
+            position: absolute;
+            bottom: 10px;
+            right: 20px;
+            font-size: 3rem;
+            color: var(--primary);
+            opacity: 0.3;
+            font-family: 'Rock Salt', cursive;
+            animation: guitarScales 3s infinite;
+        }
+
+        @keyframes guitarScales {
+            0% { transform: translateX(0) rotate(0deg); opacity: 0.3; }
+            50% { transform: translateX(-10px) rotate(-5deg); opacity: 0.5; }
+            100% { transform: translateX(0) rotate(0deg); opacity: 0.3; }
+        }
+
+        header h1 { 
+            font-size: 3.5rem; 
+            letter-spacing: 4px;
+            color: var(--primary);
+            text-shadow: 3px 3px 0 var(--secondary), 5px 5px 0 rgba(255,0,0,0.3);
+            font-family: 'Rock Salt', cursive;
+            margin-bottom: 10px;
+            transform: skew(-5deg);
+        }
+
+        header p {
+            font-size: 1.2rem;
+            color: var(--accent);
+            font-family: 'Special Elite', cursive;
+            background: rgba(0,0,0,0.7);
+            padding: 10px 30px;
+            border-radius: 30px;
+            border: 2px dashed var(--primary);
+        }
+
+        .container {
+            width: 95%;
+            max-width: 600px;
+            margin: -50px auto 50px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .categories {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            max-width: 700px;
+            margin: auto;
+            background: rgba(0,0,0,0.7);
+            padding: 15px;
+            border-radius: 50px;
+            border: 2px solid var(--primary);
+            backdrop-filter: blur(5px);
+        }
+        
+        .cat-btn {
+            background: var(--dark-surface);
+            color: var(--text-secondary);
+            padding: 12px 25px;
+            border-radius: 30px;
+            white-space: nowrap;
+            cursor: pointer;
+            font-weight: 700;
+            border: 2px solid transparent;
+            transition: 0.3s;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-family: 'Special Elite', cursive;
+        }
+
+        .cat-btn.active { 
+            background: var(--primary); 
+            color: var(--secondary);
+            border-color: var(--accent);
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(255,0,0,0.5);
+        }
+
+        .cat-btn:hover {
+            background: var(--primary-dark);
+            color: var(--text-primary);
+            border-color: var(--accent);
+            transform: scale(1.05);
+        }
+
+        .menu-section { 
+            margin-top: 30px; 
+            padding: 0 10px; 
+        }
+
+        .menu-section h2 { 
+            margin-bottom: 20px; 
+            font-size: 1.5rem; 
+            color: var(--accent); 
+            text-transform: uppercase; 
+            border-left: 5px solid var(--primary);
+            padding-left: 15px;
+            font-family: 'Rock Salt', cursive;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 0 var(--secondary);
+        }
+
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 8px;
+        }
+
+        .qty-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: none;
+            background: var(--primary);
+            color: var(--secondary);
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.2s;
+            border: 2px solid var(--accent);
+            font-family: 'Rock Salt', cursive;
+        }
+
+        .qty-btn:hover { 
+            background: var(--accent);
+            border-color: var(--primary);
+            transform: scale(1.1) rotate(360deg);
+        }
+
+        .qty-display {
+            font-weight: 700;
+            min-width: 25px;
+            text-align: center;
+            color: var(--accent);
+            font-size: 1.2rem;
+        }
+
+        .card {
+            background: var(--dark-surface);
+            border-radius: 20px;
+            padding: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: var(--shadow);
+            transition: 0.3s;
+            border: 2px solid var(--border-color);
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(5px);
+        }
+
+        /* Risco de guitarra nos cards */
+        .card::before {
+            content: '♫';
+            position: absolute;
+            top: -20px;
+            right: -20px;
+            font-size: 5rem;
+            color: var(--primary);
+            opacity: 0.1;
+            transform: rotate(20deg);
+            font-family: 'Rock Salt', cursive;
+        }
+
+        .card::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--accent), var(--primary));
+            transform: translateX(-100%);
+            transition: 0.5s;
+        }
+
+        .card:hover::after {
+            transform: translateX(0);
+        }
+
+        .card:hover {
+            transform: translateY(-5px) skewX(-1deg);
+            border-color: var(--primary);
+            box-shadow: 0 15px 40px rgba(255, 0, 0, 0.3);
+        }
+
+        .card.selected {
+            border: 3px solid var(--accent);
+            background: linear-gradient(45deg, var(--dark-surface), #330000);
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.3);
+        }
+
+        .hidden { display: none; }
+
+        .card img {
+            width: 100px;
+            height: 100px;
+            border-radius: 15px;
+            object-fit: cover;
+            border: 3px solid var(--primary);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+            transform: rotate(-2deg);
+            transition: 0.3s;
+        }
+
+        .card:hover img {
+            transform: rotate(0deg) scale(1.05);
+            border-color: var(--accent);
+        }
+
+        .card-info { flex: 1; }
+        
+        .card-info h3 { 
+            font-size: 1.1rem; 
+            margin-bottom: 5px;
+            color: var(--accent);
+            font-family: 'Special Elite', cursive;
+            letter-spacing: 1px;
+        }
+        
+        .card-info p { 
+            font-size: 0.8rem; 
+            color: var(--text-secondary);
+            margin-bottom: 5px;
+        }
+        
+        .price-tag {
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 1.3rem;
+            font-family: 'Rock Salt', cursive;
+            text-shadow: 2px 2px 0 var(--secondary);
+        }
+
+        .btn-order {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--success);
+            color: var(--secondary);
+            padding: 15px 30px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 700;
+            box-shadow: 0 10px 30px rgba(0, 204, 0, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            width: 85%;
+            max-width: 400px;
+            justify-content: center;
+            z-index: 100;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: 0.3s;
+            border: 3px solid var(--accent);
+            font-family: 'Rock Salt', cursive;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .btn-order:hover {
+            transform: translateX(-50%) scale(1.05) rotate(-1deg);
+            background: #00e600;
+            box-shadow: 0 15px 40px rgba(0, 255, 0, 0.4);
+        }
+
+        .btn-order span:last-child {
+            background: var(--secondary);
+            color: var(--accent);
+            padding: 5px 15px;
+            border-radius: 25px;
+            font-size: 1rem;
+            border: 2px solid var(--accent);
+        }
+
+        .tag {
+            background: var(--primary);
+            color: var(--secondary);
+            padding: 3px 12px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            display: inline-block;
+            margin-right: 5px;
+            font-weight: 700;
+            font-family: 'Special Elite', cursive;
+            border: 1px solid var(--accent);
+            transform: skew(-5deg);
+        }
+
+        #mesa-display {
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 10px;
+            color: var(--accent);
+            background: var(--secondary);
+            padding: 8px 25px;
+            border-radius: 40px;
+            border: 2px solid var(--primary);
+            font-family: 'Special Elite', cursive;
+            letter-spacing: 2px;
+        }
+
+        .obs-field {
+            margin: 15px 0;
+            padding: 15px;
+            background: var(--dark-surface);
+            border-radius: 16px;
+            border: 2px solid var(--primary);
+            box-shadow: var(--shadow);
+            position: relative;
+        }
+
+        .obs-field::before {
+            content: '🎸';
+            position: absolute;
+            top: -15px;
+            left: 20px;
+            font-size: 1.5rem;
+            background: var(--dark-bg);
+            padding: 0 10px;
+            border-radius: 20px;
+            border: 2px solid var(--primary);
+        }
+        
+        .obs-field label {
+            font-weight: 700;
+            display: block;
+            margin-bottom: 8px;
+            color: var(--accent);
+            font-size: 1rem;
+            font-family: 'Special Elite', cursive;
+            letter-spacing: 1px;
+        }
+        
+        .obs-field input {
+            width: 100%;
+            padding: 12px;
+            background: var(--secondary);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            font-size: 0.9rem;
+            color: var(--accent);
+            transition: 0.3s;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .obs-field input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.2);
+        }
+
+        .obs-field input::placeholder {
+            color: var(--text-secondary);
+        }
+
+        /* Scrollbar rock */
+        ::-webkit-scrollbar {
+            width: 12px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--secondary);
+            border-left: 2px solid var(--primary);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 0;
+            border-right: 3px solid var(--accent);
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent);
+            border-right-color: var(--primary);
+        }
+
+        /* Responsividade */
+        @media (max-width: 480px) {
+            header h1 {
+                font-size: 2.2rem;
+            }
+            
+            .card {
+                padding: 12px;
+            }
+            
+            .card img {
+                width: 80px;
+                height: 80px;
+            }
+            
+            .cat-btn {
+                padding: 8px 15px;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>ROCK & ROLL FOOD</h1>
+        <p>♫ Comida que toca seu coração ♫</p>
+        <p id="mesa-display"></p>
+    </header>
+
+    <div class="container">
+        <div class="categories">
+            <button class="cat-btn active" onclick="filterMenu('todos', event)">🎸 Todos</button>
+            <button class="cat-btn" onclick="filterMenu('hamburguer', event)">🍔 Burgers</button>
+            <button class="cat-btn" onclick="filterMenu('porcao', event)">🍟 Porções</button>
+            <button class="cat-btn" onclick="filterMenu('petisco', event)">🥨 Petiscos</button>
+            <button class="cat-btn" onclick="filterMenu('bebida', event)">🍺 Drinks</button>
+        </div>
+        
+        <div class="menu-section" id="menu-container">
+            <h2 id="category-title">♫ Setlist de Sabores ♫</h2>
+
+            <!-- HAMBÚRGUERES -->
+            <div class="card hamburguer" data-name="Rock Burger" data-price="34.90">
+                <img src="https://images.unsplash.com/photo-1571091718767-18b5b1457add?auto=format&fit=crop&w=200&q=80" alt="Rock Burger">
+                <div class="card-info">
+                    <h3>Rock Burger</h3>
+                    <p><span class="tag">🔥 Clássico do rock</span> 200g de carne, cheddar, bacon, onion rings</p>
+                    <div class="quantity-controls">
+                        <button class="qty-btn" onclick="updateQty(this, -1)">-</button>
+                        <span class="qty-display">0</span>
+                        <button class="qty-btn" onclick="updateQty(this, 1)">+</button>
+                    </div>
+                </div>
+                <div class="price-tag">R$ 34,90</div>
+            </div>
+
+            <div class="card hamburguer" data-name="Metal Burger" data-price="39.90">
+                <img src="https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=200&q=80" alt="Metal Burger">
+                <div class="card-info">
+                    <h3>Metal Burger</h3>
+                    <p>Picanha, molho especial, queijo prato, bacon crocante</p>
+                    <div class="quantity-controls">
+                        <button class="qty-btn" onclick="updateQty(this, -1)">-</button>
+                        <span class="qty-display">0</span>
+                        <button class="qty-btn" onclick="updateQty(this, 1)">+</button>
+                    </div>
+                </div>
+                <div class="price-tag">R$ 39,90</div>
+            </div>
+
+            <div class="card hamburguer" data-name="Punk Burger" data-price="36.90">
+                <img src="https://images.unsplash.com/photo-1586196717159-8186d1e4d497?auto=format&fit=crop&w=200&q=80" alt="Punk Burger">
+                <div class="card-info">
+                    <h3>Punk Burger</h3>
+                    <p>Frango empanado, molho barbecue, cheddar, salada</p>
+                    <div class="quantity-controls">
+                        <button class="qty-btn" onclick="updateQty(this, -1)">-</button>
+                        <span class="qty-display">0</span>
+                        <button class="qty-btn" onclick="updateQty(this, 1)">+</button>
+                    </div>
+                </div>
+                <div class="price-tag">R$ 36,90</div>
+            </div>
+
+            <!-- PORÇÕES -->
+            <div class="card porcao" data-name="Batata do Rock" data-price="28.90">
+                <img src="https://images.unsplash.com/photo-1541592106381-b31e9677c0e5?auto=format&fit=crop&w=200&q=80" alt="Batata do Rock">
+                <div class="card-info">
+                    <h3>Batata do Rock</h3>
+                    <p><span class="tag">⚡ Pedida certa</span> Batata frita com cheddar, bacon e molho especial</p>
+                    <div class="quantity-controls">
+                        <button class="qty-btn" onclick="updateQty(this, -1)">-</button>
+                        <span class="qty-display">0</span>
+                        <button class="qty-btn" onclick="updateQty(this, 1)">+</button>
+                    </div>
+                </div>
+                <div class="price-tag">R$ 28,90</div>
+            </div>
+
+            <div class="card porcao" data-name="Anéis de Cebola" data-price="24.90">
+                <img src="https://images.unsplash.com/photo-1639024471283-03518883512d?auto=format&fit=crop&w=200&q=80" alt="Anéis de Cebola">
+                <div class="card-info">
+                    <h3>Anéis de Cebola</h3>
+                    <p>Crocantes, empanados, servidos com molho barbecue</p>
+                    <div class="quantity-controls">
+                        <button class="qty-btn" onclick="updateQty(this, -1)">-</button>
+                        <span class="qty-display">0</span>
+                        <button class="qty-btn" onclick="updateQty(this, 1)">+</button>
+                    </div>
+                </div>
+                <div class="price-tag">R$ 24,90</div>
+            </div>
+
+            <!-- PETISCOS -->
+            <div class="card petisco" data-name="Calabresa Rock" data-price="32.90">
+                <img src="https://images.unsplash.com/photo-1604908176997-1253b5337c01?auto=format&fit=crop&w=200&q=80" alt="Calabresa">
+                <div class="card-info">
+                    <h3>Calabresa Rock</h3>
+                    <p>Calabresa acebolada, pimentão, azeitona, pão francês</p>
+                    <div class="quantity-controls">
+                        <button class="qty-btn" onclick="updateQty(this, -1)">-</button>
+                        <span class="qty-display">0</span>
+                        <button class="qty-btn" onclick="updateQty(this, 1)">+</button>
+                    </div>
+                </div>
+                <div class="price-tag">R$ 32,90</div>
+            </div>
+
+            <div class="card petisco" data-name="Frango a Passo" data-price="29.90">
+                <img src="https://images.unsplash.com/photo-1626082927388-6e2b6dcd40f9?auto=format&fit=crop&w=200&q=80" alt="Frango">
+                <div class="card-info">
+                    <h3>Frango a Passo</h3>
+                    <p>Iscas de frango empanadas, molho agridoce</p>
+                    <div class="quantity-controls">
+                        <button class="qty-btn" onclick="updateQty(this, -1)">-</button>
+                        <span class="qty-display">0</span>
+                        <button class="qty-btn" onclick="updateQty(this, 1)">+</button>
+                    </div>
+                </div>
+                <div class="price-tag">R$ 29,90</div>
+            </div>
+
+            <div class="card petisco" data-name="Mandioca Frita" data-price="22.90">
+                <img src="https://images.unsplash.com/photo-1585109649139-366815a0d713?auto=format&fit=crop&w=200&q=80" alt="Mandioca">
+                <div class="card-info">
+                    <h3>Mandioca Frita</h3>
+                    <p>Mandioca macia por dentro, crocante por fora</p>
+                    <div class="quantity-controls">
+                        <button class="qty-btn" onclick="updateQty(this, -1)">-</button>
+                        <span class="qty-display">0</span>
+                        <button class="qty-btn" onclick="updateQty(this, 1)">+</button>
+                    </div>
+                </div>
+                <div class="price-tag">R$ 22,90</div>
+            </div>
+
+            <!-- BEBIDAS -->
+            <div class="card bebida" data-name="Cerveja Rock" data-price="12.90">
+                <img src="https://images.unsplash.com/photo-1569529465841-dfecdab7503b?auto=format&fit=crop&w=200&q=80" alt="Cerveja">
+                <div class="card-info">
+                    <h3>Cerveja Rock</h3>
+                    <p>Long neck gelada - Heineken, Corona, Stella</p>
+                    <div class="quantity-controls">
+                        <button class="qty-btn" onclick="updateQty(this, -1)">-</button>
+                        <span class="qty-display">0</span>
+                        <button class="qty-btn" onclick="updateQty(this, 1)">+</button>
+                    </div>
+                </div>
+                <div class="price-tag">R$ 12,90</div>
+            </div>
+
+            <div class="card bebida" data-name="Whiskey Jack" data-price="22.90">
+                <img src="https://images.unsplash.com/photo-1527281400683-1aae777175f8?auto=format&fit=crop&w=200&q=80" alt="Whiskey">
+                <div class="card-info">
+                    <h3>Whiskey Jack</h3>
+                    <p>Dose de Jack Daniels com energético</p>
+                    <div class="quantity-controls">
+                        <button class="qty-btn" onclick="updateQty(this, -1)">-</button>
+                        <span class="qty-display">0</span>
+                        <button class="qty-btn" onclick="updateQty(this, 1)">+</button>
+                    </div>
+                </div>
+                <div class="price-tag">R$ 22,90</div>
+            </div>
+
+            <div class="card bebida" data-name="Refri Rock" data-price="8.90">
+                <img src="https://images.unsplash.com/photo-1625772299848-391b6a87d7b3?auto=format&fit=crop&w=200&q=80" alt="Refrigerante">
+                <div class="card-info">
+                    <h3>Refri Rock</h3>
+                    <p>Lata 350ml - Coca, Guaraná, Fanta</p>
+                    <div class="quantity-controls">
+                        <button class="qty-btn" onclick="updateQty(this, -1)">-</button>
+                        <span class="qty-display">0</span>
+                        <button class="qty-btn" onclick="updateQty(this, 1)">+</button>
+                    </div>
+                </div>
+                <div class="price-tag">R$ 8,90</div>
+            </div>
+
+            <div class="card bebida" data-name="Energético" data-price="15.90">
+                <img src="https://images.unsplash.com/photo-1613487931-45ab2ae64c8c?auto=format&fit=crop&w=200&q=80" alt="Energético">
+                <div class="card-info">
+                    <h3>Energético</h3>
+                    <p>Red Bull, Monster - 473ml</p>
+                    <div class="quantity-controls">
+                        <button class="qty-btn" onclick="updateQty(this, -1)">-</button>
+                        <span class="qty-display">0</span>
+                        <button class="qty-btn" onclick="updateQty(this, 1)">+</button>
+                    </div>
+                </div>
+                <div class="price-tag">R$ 15,90</div>
+            </div>
+        </div>
+        
+        <!-- Observação -->
+        <div class="obs-field">
+            <label>📝 Observação do pedido:</label>
+            <input type="text" id="obs-pedido" placeholder="Ex: ponto da carne, sem cebola, extra bacon...">
+        </div>
+    </div>
+
+    <button class="btn-order" onclick="enviarPedido(event)">
+        <span>🤘 Pedir pelo WhatsApp</span>
+        <span id="total-display">R$ 0,00</span>
+    </button>
+
+    <script>
+        const quantities = {};
+
+        function updateQty(btn, change) {
+            const card = btn.closest('.card');
+            const name = card.dataset.name;
+            const price = parseFloat(card.dataset.price);
+            
+            if (!quantities[name]) {
+                quantities[name] = 0;
+            }
+            
+            quantities[name] += change;
+            
+            if (quantities[name] < 0) {
+                quantities[name] = 0;
+            }
+            
+            const qtyDisplay = card.querySelector('.qty-display');
+            qtyDisplay.textContent = quantities[name];
+            
+            if (quantities[name] > 0) {
+                card.classList.add('selected');
+            } else {
+                card.classList.remove('selected');
+            }
+            
+            updateTotal();
+        }
+
+        function updateTotal() {
+            let total = 0;
+            const cards = document.querySelectorAll('.card');
+            
+            cards.forEach(card => {
+                const name = card.dataset.name;
+                const price = parseFloat(card.dataset.price);
+                const qty = quantities[name] || 0;
+                total += price * qty;
+            });
+            
+            const totalDisplay = document.getElementById('total-display');
+            totalDisplay.textContent = 'R$ ' + total.toFixed(2).replace('.', ',');
+        }
+    
+        function getMesa() {
+            const params = new URLSearchParams(window.location.search);
+            return params.get("mesa") || "Não informada";
+        }
+
+        function enviarPedido(event) {
+            event.preventDefault();
+            
+            let items = [];
+            let total = 0;
+            
+            const cards = document.querySelectorAll('.card');
+            cards.forEach(card => {
+                const name = card.dataset.name;
+                const price = parseFloat(card.dataset.price);
+                const qty = quantities[name] || 0;
+                
+                if (qty > 0) {
+                    items.push(`${qty}x ${name} - R$ ${(price * qty).toFixed(2).replace('.', ',')}`);
+                    total += price * qty;
+                }
+            });
+            
+            if (items.length === 0) {
+                alert('🤘 Faça seu barulho! Selecione pelo menos um item!');
+                return;
+            }
+            
+            const mesa = getMesa();
+            const observacao = document.getElementById('obs-pedido').value;
+
+            const mensagem = `*🤘 ROCK & ROLL FOOD - Pedido*
+
+            🎸 Mesa: ${mesa}
+            📋 *Setlist:*
+            ${items.join('\n')}
+            
+            📝 *Observação:* ${observacao || 'Sem observação'}
+
+            💰 *Total: R$ ${total.toFixed(2).replace('.', ',')}*
+
+            ⏱️ Tempo de entrega: 30-40 min`;
+
+            const mensagemEncoded = encodeURIComponent(mensagem);
+            const telefoneWhatsApp = '5588997429853';
+            
+            window.open(`https://wa.me/${telefoneWhatsApp}?text=${mensagemEncoded}`, '_blank');
+        }
+
+        function filterMenu(category, event) {
+            const buttons = document.querySelectorAll('.cat-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+
+            const cards = document.querySelectorAll('.card');
+            
+            cards.forEach(card => {
+                if (category === 'todos') {
+                    card.classList.remove('hidden');
+                } else {
+                    if (card.classList.contains(category)) {
+                        card.classList.remove('hidden');
+                    } else {
+                        card.classList.add('hidden');
+                    }
+                }
+            });
+        }
+
+        window.onload = function() {
+            const mesa = getMesa();
+            document.getElementById("mesa-display").innerText = "Mesa " + mesa;
+            
+            // Inicializa displays de quantidade
+            document.querySelectorAll('.qty-display').forEach(el => el.textContent = '0');
+            updateTotal();
+        }
+    </script>
+</body>
+</html>
